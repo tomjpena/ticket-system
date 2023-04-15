@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { getSingleTicket, closeTicket } from "../features/tickets/ticketSlice"
-import { getNotes, addNotes, reset as notesReset } from "../features/notes/noteSlice"
+import { getNotes, addNotes } from "../features/notes/noteSlice"
 import { useParams, useNavigate } from "react-router-dom"
 import { FaPlus } from "react-icons/fa"
 import Modal from 'react-modal'
@@ -32,7 +32,6 @@ const Ticket = () => {
 
   const {notes, isLoading: notesIsLoading} = useSelector((state) => state.notes)
 
-  const params = useParams()
   const dispatch = useDispatch()
   const {ticketId} = useParams()
   const navigate = useNavigate()
@@ -44,6 +43,7 @@ const Ticket = () => {
 
     dispatch(getSingleTicket(ticketId))
     dispatch(getNotes(ticketId))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isError, message, ticketId])
 
   const onTicketClose = () => {
