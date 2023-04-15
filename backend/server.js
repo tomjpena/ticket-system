@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const colors = require('colors')
 const dotenv = require('dotenv').config()
@@ -17,14 +18,20 @@ app.use(express.json())
 // form urlencoded
 app.use(express.urlencoded({extended: false}))
 
-//Welcome message to anyone accessing api at root
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'This is the Support Desk Ticket System API' })
-})
 
 //Routes
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/tickets', require('./routes/ticketRoutes'))
+
+//Server the frontend
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../frontend/build')))
+  app.get('*', (req, res) => res.sendFile(__dirname, '../', 'frontend', 'build', 'index.html'))
+} else {
+  app.get('/', (req, res) => {
+  res.status(200).json({ message: 'This is the Support Desk Ticket System API' })
+})
+}
 
 app.use(errorHandler)
 
