@@ -11,7 +11,7 @@ connectDB()
 
 const app = express()
 
-// Body patser middleware
+// Body parser middleware
 // Raw json
 app.use(express.json())
 // form urlencoded
@@ -24,6 +24,7 @@ app.get('/', (req, res) => {
 
 //Routes
 app.use('/api/users', require('./routes/userRoutes'))
+app.use('/api/tickets', require('./routes/ticketRoutes'))
 
 app.use(errorHandler)
 

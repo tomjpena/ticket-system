@@ -6,10 +6,9 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 // Import mongoose schema
 const User = require('../models/userModel');
-const userModel = require('../models/userModel');
 
 
-// @desc Registers user 
+// @desc POST Registers user 
 // @route /api/users
 // @access public
 const registerUser = asyncHandler(async (req, res) => {
@@ -55,7 +54,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 })
 
-// @desc Logs user in 
+// @desc POST Logs user in 
 // @route /api/users/login
 // @access public
 const loginUser = asyncHandler(async (req, res) => {
@@ -82,7 +81,7 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 })
 
-// @desc Get current user
+// @desc GET current user
 // @route /api/users/me
 // @access private
 const getMe = asyncHandler(async (req, res) => {
