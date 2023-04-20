@@ -42,6 +42,22 @@ export const getTickets = createAsyncThunk('tickets/getAll', async (_, thunkAPI)
   }
 })
 
+// get users tickets
+export const getTicketsAdmin = createAsyncThunk('tickets/getAllAdmin', async (_, thunkAPI) => {
+  try {
+    // Use thunkAPI to get user token from the auth state
+    const token = thunkAPI.getState().auth.user.token
+    // Use the getTickets in the ticketService to get tickets in the db of the user making the request
+    return await ticketService.getTicketsAdmin(token)
+  } catch (error) {
+    // Look for error message
+    const message = error.response.data.message
+
+    // use thunkapi to handle error message
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
 
 // get single ticket
 export const getSingleTicket = createAsyncThunk('tickets/get', async (ticketId, thunkAPI) => {
@@ -60,12 +76,28 @@ export const getSingleTicket = createAsyncThunk('tickets/get', async (ticketId, 
 })
 
 // close ticket
-export const closeTicket = createAsyncThunk('tickets/clise', async (ticketId, thunkAPI) => {
+export const closeTicket = createAsyncThunk('tickets/close', async (ticketId, thunkAPI) => {
   try {
     // Use thunkAPI to get user token from the auth state
     const token = thunkAPI.getState().auth.user.token
     // Use the getTickets in the ticketService to get tickets in the db of the user making the request
     return await ticketService.closeTicket(ticketId, token)
+  } catch (error) {
+    // Look for error message
+    const message = error.response.data.message
+
+    // use thunkapi to handle error message
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
+// update ticket status
+export const changeTicketStatus = createAsyncThunk('tickets/update', async (ticketId, thunkAPI) => {
+  try {
+    // Use thunkAPI to get user token from the auth state
+    const token = thunkAPI.getState().auth.user.token
+    // Use the getTickets in the ticketService to get tickets in the db of the user making the request
+    return await ticketService.changeTicketStatus(ticketId, token)
   } catch (error) {
     // Look for error message
     const message = error.response.data.message
@@ -125,6 +157,33 @@ export const ticketSlice = createSlice({
         state.isLoading = false
         state.tickets.map((ticket) => ticket._id === action.payload._id ? (ticket.status = 'close') : ticket)
       })
+      .addCase(getTicketsAdmin.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(getTicketsAdmin.fulfilled, (state, action) => {
+        state.tickets = action.payload
+        state.isLoading = false 
+        state.isSuccess = true
+      })
+      .addCase(getTicketsAdmin.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      .addCase(changeTicketStatus.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(changeTicketStatus.fulfilled, (state, action) => {
+        state.tickets = action.payload
+        state.isLoading = false 
+        state.isSuccess = true
+      })
+      .addCase(changeTicketStatus.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      
       
   }
 })

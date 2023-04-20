@@ -26,12 +26,12 @@ export const getNotes = createAsyncThunk('notes/getAll', async (ticketId, thunkA
 })
 
 //add notes
-export const addNotes = createAsyncThunk('notes/create', async ({noteText, ticketId}, thunkAPI) => {
+export const addNotes = createAsyncThunk('notes/create', async ({noteText, isStaff, ticketId}, thunkAPI) => {
   try {
     // Use thunkAPI to get user token from the auth state
     const token = thunkAPI.getState().auth.user.token
     // Use the getTickets in the ticketService to get tickets in the db of the user making the request
-    return await noteService.addNotes(noteText, ticketId, token)
+    return await noteService.addNotes(noteText, isStaff, ticketId, token)
   } catch (error) {
     // Look for error message
     const message = error.response.data.message

@@ -5,9 +5,9 @@ const NoteItem = ({note}) => {
   const {user} = useSelector((state) => state.auth)
 
   return (
-    <div className="note" style={{
-      backgroundColor: note.isStaff ? 'rgba(0,0,0,0.7)' : '#fff',
-      color: note.isStaff ? '#fff' : '#000'
+    <div className="my-5 rounded-md border border-neutral-content text-md py-3 px-4" style={{
+      backgroundColor: note.isStaff ? '#000000' : '#FFFFFF',
+      color: note.isStaff ? '#FFFFFF' : '#000000'
     }}>
       <h4>Note from {note.isStaff ? <span>Staff</span> : <span>{user.name}</span>}</h4>
       <p>{note.text}</p>

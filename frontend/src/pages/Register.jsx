@@ -35,7 +35,7 @@ const Register = () => {
 
     //Redirect when logged in
     if(isSuccess && user) {
-      navigate('/')
+      navigate('/tickets')
     }
 
     dispatch(reset())
@@ -76,56 +76,56 @@ const Register = () => {
 
   return (
     <>
-      <section className="heading">
-        <h1>
-          <FaUser /> Register
+      <section className="mt-20">
+        <h1 className="flex items-center justify-center mb-8 text-5xl">
+          <FaUser className="mr-1"/> Register
         </h1>
-        <p>Please create an account</p>
+        <p className="text-3xl mb-20">Please create an account</p>
       </section>
-      <section className="form">
+      <section className="mx-auto w-3/5">
         <form onSubmit={onSubmit} >
-          <div className="form-group">
+          <div className="my-6">
             <input 
               type="text" 
-              className="form-control" 
+              className="input input-bordered input-md w-full max-w-3xl" 
               id="name" 
               value={name} 
               onChange={onChange}
               placeholder="Enter your name"
               required />
           </div>
-          <div className="form-group">
+          <div className="my-6">
             <input 
               type="email" 
-              className="form-control" 
+              className="input input-bordered input-md w-full max-w-3xl" 
               id="email" 
               value={email} 
               onChange={onChange}
               placeholder="Enter your email"
               required />
           </div>
-          <div className="form-group">
+          <div className="my-6">
             <input 
               type="password" 
-              className="form-control" 
+              className="input input-bordered input-md w-full max-w-3xl" 
               id="password" 
               value={password} 
               onChange={onChange}
               placeholder="Enter your password"
               required />
           </div>
-          <div className="form-group">
+          <div className="my-6">
             <input 
               type="password" 
-              className="form-control" 
+              className="input input-bordered input-md w-full max-w-3xl" 
               id="password2" 
               value={password2} 
               onChange={onChange}
               placeholder="Re-Enter your password"
               required />
           </div>
-          <div className="form-group">
-            <button className="btn btn-block">
+          <div className="my-6">
+            <button className="btn btn-block btn-info max-w-3xl normal-case">
               Submit
             </button>
           </div>

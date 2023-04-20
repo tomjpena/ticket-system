@@ -14,23 +14,21 @@ function App() {
   return (
     <div>
       <Router>
-        <div className="container">
-          <Header />
+        <Header />
           <Routes>
             <Route path='/' element={<Home />}/>
             <Route path='/login' element={<Login />}/>
             <Route path='/register' element={<Register />}/>
-            <Route path='/new-ticket' element={<PrivateRoute />}>
-              <Route path='/new-ticket' element={<NewTicket />}/>
-            </Route>
             <Route path='/tickets' element={<PrivateRoute />}>
               <Route path='/tickets' element={<Tickets />}/>
+              <Route path='/tickets/new-ticket' element={<PrivateRoute />}>
+                <Route path='/tickets/new-ticket' element={<NewTicket />}/>
+              </Route>
             </Route>
             <Route path='/ticket/:ticketId' element={<PrivateRoute />}>
               <Route path='/ticket/:ticketId' element={<Ticket />}/>
             </Route>
           </Routes> 
-        </div>
 
       </Router>
       <ToastContainer />

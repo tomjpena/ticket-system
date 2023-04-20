@@ -20,6 +20,27 @@ const getTickets = asyncHandler(async (req, res) => {
   res.status(200).json(tickets)
 })
 
+// @desc Get all tickets for admin
+// @route GET /api/tickets/:adminID
+// @access private
+const getTicketsAdmin = asyncHandler(async (req, res) => {
+  // Get user from JWT
+  const user = await User.findById(req.user.id)
+
+  if(!user) {
+    res.status(401)
+    throw new Error('User not found')
+  }
+  if(user.isStaff === false) {
+    res.status(401)
+    throw new Error('User is not staff')
+  }
+
+  const tickets = await Ticket.find()
+  
+  res.status(200).json(tickets)
+})
+
 // @desc Get single ticket
 // @route GET /api/tickets/:id
 // @access private
@@ -37,11 +58,6 @@ const getSingleTicket = asyncHandler(async (req, res) => {
   if(!ticket) {
     res.status(404)
     throw new Error('Ticket not found')
-  }
-
-  if (ticket.user.toString() !== req.user.id) {
-    res.status(401)
-    throw new Error('Not Authorized')
   }
   
   res.status(200).json(ticket)
@@ -126,11 +142,6 @@ const updateTicket = asyncHandler(async (req, res) => {
     throw new Error('Ticket not found')
   }
 
-  if (ticket.user.toString() !== req.user.id) {
-    res.status(401)
-    throw new Error('Not Authorized')
-  }
-
   const updatedTicket = await Ticket.findByIdAndUpdate(req.params.id, req.body, { new: true })
   
   res.status(200).json(updatedTicket)
@@ -143,5 +154,6 @@ module.exports = {
   getSingleTicket,
   createTicket,
   deleteTicket,
-  updateTicket 
+  updateTicket,
+  getTicketsAdmin 
 }

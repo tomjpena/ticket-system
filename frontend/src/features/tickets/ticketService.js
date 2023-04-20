@@ -30,6 +30,20 @@ const getTickets = async (token) => {
   return response.data
 }
 
+//get tickets for admin
+const getTicketsAdmin = async (token) => {
+  //config variable to add token to the request
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+  
+  const response = await axios.get('/api/admin', config)
+
+  return response.data
+}
+
 //get single ticket
 const getSingleTicket = async (ticketId, token) => {
   //config variable to add token to the request
@@ -58,12 +72,28 @@ const closeTicket = async (ticketId, token) => {
   return response.data
 }
 
+// close tickets
+const changeTicketStatus = async (ticketId, token) => {
+  //config variable to add token to the request
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+  
+  const response = await axios.put(API_URL + ticketId, {status: 'open'}, config)
+
+  return response.data
+}
+
 
 const ticketService = {
   createTicket,
   getTickets, 
   getSingleTicket,
-  closeTicket
+  closeTicket,
+  getTicketsAdmin,
+  changeTicketStatus
 }
 
 export default ticketService

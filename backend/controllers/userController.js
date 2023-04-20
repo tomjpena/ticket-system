@@ -46,7 +46,8 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id)
+      token: generateToken(user._id),
+      isStaff: user.isStaff
     })
   } else {
     res.status(400)
@@ -73,7 +74,8 @@ const loginUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id)
+      token: generateToken(user._id),
+      isStaff: user.isStaff
     })
   } else {
     res.status(401)
@@ -89,7 +91,8 @@ const getMe = asyncHandler(async (req, res) => {
   const user = {
     id: req.user._id,
     email: req.user.email,
-    name: req.user.name
+    name: req.user.name,
+    isStaff: req.user.isStaff
   }
   res.status(200).json(user)
 })

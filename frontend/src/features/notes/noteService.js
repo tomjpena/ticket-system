@@ -17,7 +17,7 @@ const getNotes = async (ticketId, token) => {
 }
 
 // add note
-const addNotes = async (noteText, ticketId, token) => {
+const addNotes = async (noteText, isStaff, ticketId, token) => {
   //config variable to add token to the request
   const config = {
     headers: {
@@ -27,7 +27,8 @@ const addNotes = async (noteText, ticketId, token) => {
   
   const response = await axios.post(API_URL + ticketId + '/notes',
   {
-    text: noteText
+    text: noteText,
+    isStaff
   }, 
   config)
 
@@ -36,7 +37,7 @@ const addNotes = async (noteText, ticketId, token) => {
 
 const noteService = {
   getNotes,
-  addNotes
+  addNotes,
 }
 
 export default noteService
