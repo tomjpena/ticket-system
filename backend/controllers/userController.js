@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs')
 // import json web token for validating access to website functions
 const jwt = require('jsonwebtoken')
 // Import mongoose schema
+
 const User = require('../models/userModel');
 
 
@@ -65,17 +66,14 @@ const loginUser = asyncHandler(async (req, res) => {
   // Find user with email entered
   const user = await User.findOne({email})
 
-  // Compare password entered with password of found user
-  const passMatch = await bcrypt.compare(password, user.password)
-
   // Check user and password match
-  if(user && passMatch) {
+  if(user && (await bcrypt.compare(password, user.password))) {
     res.status(200).json({
       _id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id),
-      isStaff: user.isStaff
+      isStaff: user.isStaff,
+      token: generateToken(user._id)
     })
   } else {
     res.status(401)

@@ -3,45 +3,30 @@ import { useSelector, useDispatch } from "react-redux"
 import { getSingleTicket, closeTicket } from "../features/tickets/ticketSlice"
 import { getNotes, addNotes } from "../features/notes/noteSlice"
 import { useParams, useNavigate } from "react-router-dom"
-import { FaPlus } from "react-icons/fa"
-import Modal from 'react-modal'
+import { Paper, Typography, TextField, Divider, Box, Modal, Button } from "@mui/material"
+import { FaPlus } from 'react-icons/fa'
 import BackButton from "../components/BackButton"
 import Spinner from "../components/Spinner"
 import { toast } from "react-toastify"
-import NoteItem from '../components/NoteItem'
 
-const customStyles = {
-  content: {
-    width: '600px',
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-    position: 'relative',
-    background: '#FFFFFF'
-  },
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
 }
-
-Modal.setAppElement('#root')
 
 const Ticket = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
-  const [noteText, setNoteText] = useState('')
+  const [noteText, setNoteText] = useState('')  
   const {ticket, isLoading, isError, message} = useSelector((state) => state.tickets)
   const {user} = useSelector((state) => state.auth)
   const {notes, isLoading: notesIsLoading} = useSelector((state) => state.notes)
-
-  let ticketStatusColor
-
-  if(ticket.status === 'new') {
-    ticketStatusColor = 'success'
-  } else if (ticket.status === 'open') {
-    ticketStatusColor = 'info'
-  } else if (ticket.status === 'closed') {
-    ticketStatusColor = 'error'
-  }
 
   const dispatch = useDispatch()
   const {ticketId} = useParams()
@@ -83,7 +68,6 @@ const Ticket = () => {
     } else {
       dispatch(addNotes({noteText, isStaff, ticketId}))
     }
-    setNoteText('')
       
     closeModal()  
   }
@@ -94,67 +78,89 @@ const Ticket = () => {
   }
   
   return (
-    <div className="text-left max-w-7xl mx-auto">
-      <div className="mx-6">
 
-        <header>
-          <BackButton url='/tickets'/>
-          <h2 className="text-2xl font-semibold flex justify-between mb-3 mt-6">
-            Ticket ID: {ticket._id}
-            <span className={`badge badge-outline badge-${ticketStatusColor} justify-self-center w-auto px-6`}>
-              {ticket.status}
-            </span>
-          </h2>
-          <h3 className="my-3">
-            Date Submitted: {new Date(ticket.createdAt).toLocaleString('en-us')}
-          </h3>
-          <h3 className="my-3">Type of issue: {ticket.product}</h3>
-          <div className="divider divide-neutral-content"></div> 
-          <div className="bg-neutral my-5 rounded-md border border-neutral-content text-md py-3 px-4">
-            <h3 className="text-2xl font-semibold mb-4">Description of issue</h3>
-            <p>{ticket.description}</p>
-          </div>
-          <h2 className="text-2xl mb-2">Notes</h2>
-        </header>
-
-        {ticket.status !== 'closed' && 
-        <button className="btn mb-6" onClick={openModal}><FaPlus className="mr-1" />Add Note</button>
-        }
-
-        <Modal 
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          style={customStyles}
-          contentLabel="Add Note">
-            <h2 className="text-2xl text-left my-3">Add Note</h2>
-            <button className="btn btn-sm btn-circle absolute right-2 top-2" onClick={closeModal}>X</button>
-            <form onSubmit={onNoteSubmit}>
-              <div>
-                <textarea 
-                  name="noteText" 
-                  id="noteText" 
-                  className="textarea textarea-bordered textarea-md w-full max-w-3xl block mb-5"
-                  placeholder="Note text"
-                  value={noteText}
-                  onChange={(e) => setNoteText(e.target.value)}
-                  >
-                </textarea>
-              </div>
-              <div>
-                <button className="btn block" type="submit">Submit</button>
-              </div>
-            </form>
-        </Modal>
-        <div className="overflow-y-auto h-96">
-        {notes.map((note) => (
-          <NoteItem key={note._id} note={note} />
-          ))}
-
+    <div>
+      <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+        <BackButton url='/tickets'/>
+        <Typography variant="h5" color="primary" gutterBottom>
+          Ticket ID: {ticket._id}
+        </Typography>
+        <Divider />
+        <Typography variant="body1" sx={{ mt: 1 }}>
+          <strong>Status:</strong> {ticket.status}
+        </Typography>
+        <Typography variant="body1">
+          <strong>Date Submitted:</strong> {new Date(ticket.createdAt).toLocaleString('en-us')}
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          <strong>Type of issue:</strong> {ticket.product}
+        </Typography>
+        <Divider />
+        <Typography component="h2" variant="body1" sx={{ mt: 1, fontWeight: 'bold' }}>
+          Description of issue
+        </Typography>
+        <Typography variant="body2">
+          {ticket.description}
+        </Typography>
+        <Box>
+          <Typography component="h2" variant="body1" sx={{ mt: 1, fontWeight: 'bold' }}>
+            Notes
+          </Typography>
+          <Button onClick={openModal}><FaPlus />Add Notes</Button>
+          {notes.map((note) => (
+           <Paper sx={{
+            backgroundColor: note.isStaff ? '#000000' : '#FFFFFF',
+            color: note.isStaff ? '#FFFFFF' : '#000000',
+            p: 1,
+            mb: 1
+            }} key={note._id}>
+            <Typography component="h4" >Note from {note.isStaff ? <span>Staff</span> : <span>{user.name}</span>}</Typography>
+            <Typography component="p" variant="body1">{note.text}</Typography>
+            <Typography component="p" variant="body1">
+              {new Date(note.createdAt).toLocaleString('en-us')}
+            </Typography>
+          </Paper>
+           ))}
+        </Box>
         {ticket.status !== 'closed' && (
-          <button className="btn btn-block btn-danger" onClick={onTicketClose}>Close Ticket</button>
-          )}
-        </div>
-      </div>
+           <Button onClick={onTicketClose}>Close Ticket</Button>
+           )}
+
+        <Modal
+          open={modalIsOpen}
+          onClose={closeModal}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Add a Note
+            </Typography>
+            <Box component="form" noValidate onSubmit={onNoteSubmit}>
+              <TextField
+              fullWidth
+              name="noteText" 
+              id="noteText" 
+              placeholder="Enter your note here"
+              onChange={(e) => setNoteText(e.target.value)}
+              multiline
+              sx={{ mt:1 }}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                sx={{ mt:2 }}
+              >
+                Submit
+              </Button>
+          
+            </Box>
+          </Box>
+        </Modal>
+      </Paper>
+  
     </div>
   )
 }

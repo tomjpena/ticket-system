@@ -37,11 +37,6 @@ const addNotes = asyncHandler(async (req, res) => {
 
   const ticket = await Ticket.findById(req.params.ticketId)
 
-  // if(ticket.user.toString() !== req.user.id || req.user.isStaff === true) {
-  //   res.status(401)
-  //   throw new Error('User not authorized1')
-  // }
-
   const note = await Note.create({
     text: req.body.text,
     ticket: req.params.ticketId,

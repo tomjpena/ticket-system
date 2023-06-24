@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { FaUser } from "react-icons/fa"
+import { Container, CssBaseline, Typography, TextField, Button, Paper, Box } from "@mui/material"
 import { toast } from "react-toastify"
 import { useSelector, useDispatch } from 'react-redux'
 import { register, reset } from "../features/auth/authSlice"
@@ -51,7 +51,7 @@ const Register = () => {
   }
 
   // onSubmit function for form submission
-  const onSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
 
     // If passwords dont match, create toast. 
@@ -59,12 +59,12 @@ const Register = () => {
     if(password !== password2) {
       toast.error('Password do not match')
     } else {
+      const data = new FormData(e.currentTarget);
       const userData = {
-        name,
-        email,
-        password
+        name: data.get('name'),
+        email: data.get('email'),
+        password: data.get('password'),
       }
-
       dispatch(register(userData))
     }
   }
@@ -75,63 +75,70 @@ const Register = () => {
 
 
   return (
-    <>
-      <section className="mt-20">
-        <h1 className="flex items-center justify-center mb-8 text-5xl">
-          <FaUser className="mr-1"/> Register
-        </h1>
-        <p className="text-3xl mb-20">Please create an account</p>
-      </section>
-      <section className="mx-auto w-3/5">
-        <form onSubmit={onSubmit} >
-          <div className="my-6">
-            <input 
-              type="text" 
-              className="input input-bordered input-md w-full max-w-3xl" 
-              id="name" 
-              value={name} 
-              onChange={onChange}
-              placeholder="Enter your name"
-              required />
-          </div>
-          <div className="my-6">
-            <input 
-              type="email" 
-              className="input input-bordered input-md w-full max-w-3xl" 
-              id="email" 
-              value={email} 
-              onChange={onChange}
-              placeholder="Enter your email"
-              required />
-          </div>
-          <div className="my-6">
-            <input 
-              type="password" 
-              className="input input-bordered input-md w-full max-w-3xl" 
-              id="password" 
-              value={password} 
-              onChange={onChange}
-              placeholder="Enter your password"
-              required />
-          </div>
-          <div className="my-6">
-            <input 
-              type="password" 
-              className="input input-bordered input-md w-full max-w-3xl" 
-              id="password2" 
-              value={password2} 
-              onChange={onChange}
-              placeholder="Re-Enter your password"
-              required />
-          </div>
-          <div className="my-6">
-            <button className="btn btn-block btn-info max-w-3xl normal-case">
-              Submit
-            </button>
-          </div>
-        </form>
-      </section>
-    </>
+
+    <Container component="main" maxWidth="xs" sx={{ mt:10 }}>
+      <CssBaseline />
+      <Box>
+        <Typography component="h1" variant="h5">
+          Sign up!
+        </Typography>
+        <Box component="form" noValidate onSubmit={handleSubmit}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="name"
+            label="Name"
+            name="name"
+            autoComplete="email"
+            autoFocus
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Username"
+            name="email"
+            autoComplete="email"
+            autoFocus
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+          />
+           <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password2"
+            label="Re-Enter Password"
+            type="password"
+            id="password2"
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            sx={{ mt:2 }}
+          >
+            Sign Up
+          </Button>
+          
+        </Box>
+      </Box>
+    </Container>
   )
 }
 export default Register

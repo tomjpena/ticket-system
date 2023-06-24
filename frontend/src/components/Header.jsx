@@ -1,61 +1,58 @@
-import {FaSignInAlt, FaSignOutAlt, FaUser} from 'react-icons/fa'
+import { FaSignOutAlt, FaUser } from 'react-icons/fa'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout, reset } from '../features/auth/authSlice'
+import { CssBaseline, Toolbar, Button, AppBar } from '@mui/material'
+import { grey } from '@mui/material/colors';
 
 
 const Header = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const color = grey[50]
 
   const {user} = useSelector((state) => state.auth)
-
 
   const onLogout = () => {
     dispatch(logout())
     dispatch(reset())
     navigate('/')
-  }
-
-  
+  }  
 
   return (
-    <div className="flex flex-col my-1 w-full max-w-7xl mx-auto">
-      <header className="navbar bg-base-100">
-        <div className="flex-1">
-          <Link to='/' className="btn btn-ghost normal-case text-lg">IT Help Desk</Link>  
-        </div>
-        <div className="flex-none">
-          <ul className="menu menu-horizontal px-1">
+    <>
+      <CssBaseline />
+        <AppBar position="relative">
+          <Toolbar style={{ display: "flex", justifyContent: "space-between", pr: '24px' }}>
+            <Button
+              component={Link} 
+              to='/' 
+              variant="outlined" 
+              style={{ color: color, borderColor: color, borderWidth: '1px' }}
+            >
+              IT Help Desk
+            </Button>
             {user 
-            ? (
-                <li>
-                  <button className="text-lg" onClick={onLogout}>
-                    <FaSignOutAlt /> Logout
-                  </button>
-                </li>
-              ) 
-            : (
-              <>
-              <li>
-                <Link to='/login'>
-                  <FaSignInAlt className='text-2xl'/> Login    
-                </Link>
-              </li>
-              <li>
-                  <Link to='/register'>
-                    <FaUser className='text-2xl'/> Register   
-                  </Link>
-              </li>
-              </>
-              )
-           }
-          </ul>
-        </div>
-
-      </header>
-    </div>
-
+              ? (
+                  <Button variant="outlined" style={{ color: color, borderColor: color, borderWidth: '1px' }} onClick={onLogout}>
+                      <FaSignOutAlt /> Logout
+                  </Button>
+                  
+                ) 
+                : (
+                  <Button
+                    component={Link} 
+                    to='/register' 
+                    variant="outlined" 
+                    style={{ color: color, borderColor: color, borderWidth: '1px' }}
+                  >
+                    <FaUser /> Register
+                  </Button>
+                )
+            }
+          </Toolbar>
+        </AppBar>
+      </>
   )
 }
 export default Header

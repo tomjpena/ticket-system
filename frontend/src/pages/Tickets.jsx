@@ -1,10 +1,10 @@
 import { useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { getTickets, getTicketsAdmin } from "../features/tickets/ticketSlice"
-import { Link } from "react-router-dom"
+import { getTickets, getTicketsAdmin, changeTicketStatus } from "../features/tickets/ticketSlice"
 import { reset } from "../features/tickets/ticketSlice"
+import { Table, TableBody, TableCell, TableHead, TableRow, Typography, Paper, Link } from "@mui/material"
+import { Link as RouterLink } from 'react-router-dom';
 import Spinner from "../components/Spinner"
-import TicketItem from "../components/TicketItem"
 
 
 const Tickets = () => {
@@ -26,65 +26,109 @@ const Tickets = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch])
 
+  const onAdminOpen = (ticket) => {
+    if(user.isStaff && ticket.status !== 'closed') {
+      dispatch(changeTicketStatus(ticket._id))
+    }
+  }
+
   if(isLoading) {
     return <Spinner />
   }
 
-  if(user.isStaff) {
-    return (
-      <>
-      <h1 className="text-5xl my-20">Admin Dashboard</h1>
+  return (
 
-        <div className="max-w-[70vw] items-center grow mx-auto overflow-y-auto h-96">
-          <div className="grid grid-cols-4 mb-5 gap-5 justify-between items-center bg-neutral rounded mx-5 py-2">
-            <div>Date</div>
-            <div>Product</div>
-            <div>Status</div>
-            <div></div>
-          </div>
-          {tickets.length > 1 ? tickets.map((ticket) => (
-            <TicketItem key={ticket._id} ticket={ticket}/>
-            )) : <Spinner />}
-        </div>
-
+    user.isStaff ? 
+      ( <>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            <Typography component="h1" variant="h4" color="primary" gutterBottom>
+              Admin Dashboard
+            </Typography>
+            
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Product</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>View</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody> 
+                {tickets
+                ? (
+                  <>
+                    {tickets.map((ticket) => (
+                        <TableRow key={ticket._id}>
+                          <TableCell>{new Date(ticket.createdAt).toLocaleString('en-us')}</TableCell>
+                          <TableCell>{ticket.product}</TableCell>
+                          <TableCell>{ticket.status}</TableCell>
+                          <TableCell> 
+                            <Link component={RouterLink} to={`/ticket/${ticket._id}`} onClick={() => onAdminOpen(ticket)}>View</Link>
+                          </TableCell>
+                        </TableRow>
+                    ))}
+                  </>
+                ) 
+                : (
+                  <Typography component="h2" variant="h6">
+                    No tickets
+                  </Typography>
+                )}
+              </TableBody>
+            </Table>
+          </Paper>
+        </>)  :
+        (<>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            <Typography component="h1" variant="h4" color="primary" gutterBottom>
+              Tickets
+            </Typography>
+            <Typography component="h2" variant="h6">
+              Need help? Create a ticket so our team of experts can help!
+            </Typography>
+    
+            <Link href='/tickets/new-ticket' sx={{ textDecoration:"none" }} >Create Ticket</Link>
+    
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Product</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>View</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody> 
+                {tickets
+                ? (
+                  <>
+                    {tickets.map((ticket) => (
+                        <TableRow key={ticket._id}>
+                          <TableCell>{new Date(ticket.createdAt).toLocaleString('en-us')}</TableCell>
+                          <TableCell>{ticket.product}</TableCell>
+                          <TableCell>{ticket.status}</TableCell>
+                          <TableCell> 
+                            <Link component={RouterLink} to={`/ticket/${ticket._id}`} onClick={() => onAdminOpen(ticket)}>View</Link>
+                          </TableCell>
+                        </TableRow>
+                    ))}
+                  </>
+                ) 
+                : (
+                  <Typography component="h2" variant="h6">
+                    No tickets
+                  </Typography>
+                )}
+              </TableBody>
+            </Table>
+          </Paper>
       
-    </>
-    )
-  } else {
-    return (
-      <>
-        <h1 className="text-5xl my-20">Dashboard</h1>
-  
-        <div className="flex justify-center">
-  
-          <div className="grow-0 ml-auto">
-            <div className="card w-80 bg-neutral shadow-xl">
-              <div className="card-body">
-                <h2 className="card-title">Need help?</h2>
-                <p>Create a ticket so that our team of experts can get to work on your issues right away!</p>
-                  <h1 className="card-actions justify-end">
-                    <Link to='/tickets/new-ticket' className="btn btn-info">Create Ticket</Link>
-                  </h1>
-              </div>
-            </div>
-          </div>
-  
-          <div className="max-w-[70vw] items-center grow mx-auto overflow-y-auto h-96">
-            <div className="grid grid-cols-4 mb-5 gap-5 justify-between items-center bg-neutral rounded mx-5 py-2">
-              <div>Date</div>
-              <div>Product</div>
-              <div>Status</div>
-              <div></div>
-            </div>
-            {tickets.map((ticket) => (
-              <TicketItem key={ticket._id} ticket={ticket}/>
-              ))}
-          </div>
-  
-        </div>
-      </>
+        </>)
+    
+
+    
     )
   }
 
-}
 export default Tickets
