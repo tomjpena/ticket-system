@@ -14,7 +14,7 @@ connectDB()
 const app = express()
 
 app.use("/", cors({
-  origin: "http://localhost:3000",
+  origin: "https://ithelpdeskclient.onrender.com",
   credentials: true,
   exposedHeaders: ["Set-Cookie"],
   methods: 'GET, POST, PUT, DELETE',
