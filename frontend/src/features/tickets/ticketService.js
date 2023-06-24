@@ -39,7 +39,7 @@ const getTicketsAdmin = async (token) => {
     }
   }
   
-  const response = await axios.get('/api/admin', config)
+  const response = await axios.get('https://ithelpdesk.onrender.com/api/admin', config)
 
   return response.data
 }
