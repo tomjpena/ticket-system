@@ -155,7 +155,12 @@ export const ticketSlice = createSlice({
       })
       .addCase(closeTicket.fulfilled, (state, action) => {
         state.isLoading = false
-        state.tickets.map((ticket) => ticket._id === action.payload._id ? (ticket.status = 'close') : ticket)
+        state.tickets = state.tickets.map(ticket => {
+          if (ticket._id === action.payload._id) {
+            return { ...ticket, status: 'closed' };
+          }
+          return ticket;
+        })
       })
       .addCase(getTicketsAdmin.pending, (state) => {
         state.isLoading = true
@@ -174,9 +179,14 @@ export const ticketSlice = createSlice({
         state.isLoading = true
       })
       .addCase(changeTicketStatus.fulfilled, (state, action) => {
-        state.tickets = action.payload
-        state.isLoading = false 
-        state.isSuccess = true
+        state.isLoading = false;
+        const updatedTicket = action.payload;
+        state.tickets = state.tickets.map(ticket => {
+          if (ticket._id === updatedTicket._id) {
+            return updatedTicket;
+          }
+          return ticket;
+        })
       })
       .addCase(changeTicketStatus.rejected, (state, action) => {
         state.isLoading = false

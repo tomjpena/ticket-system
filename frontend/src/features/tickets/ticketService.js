@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL ='/api/tickets/'
+const API_URL ='https://ithelpdesk.onrender.com/api/tickets/'
 
 //Create new ticket
 const createTicket = async (ticketData, token) => {
@@ -39,7 +39,7 @@ const getTicketsAdmin = async (token) => {
     }
   }
   
-  const response = await axios.get('https://ithelpdesk.onrender.com/api/admin', config)
+  const response = await axios.get(`https://ithelpdesk.onrender.com/api/admin`, config)
 
   return response.data
 }
